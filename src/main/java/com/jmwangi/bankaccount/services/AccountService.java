@@ -46,7 +46,7 @@ public class AccountService {
         }
 
         // check if maximum deposit frequency has been reached
-        List<AccountTransaction> transactions = accountRepository.findByTimestamp_Date(new Date());
+        List<AccountTransaction> transactions = accountRepository.findByTimestampDate(new Date());
         long transactionsCount = transactions.stream()
                 .filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) > 0)
                 .count();

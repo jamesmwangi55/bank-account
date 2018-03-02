@@ -15,12 +15,12 @@ public class AccountTransaction {
     private BigDecimal balance;
     private Long accountNo;
     private BigDecimal amount;
-    private Date timestamp;
+    private Long timestamp;
 
     public AccountTransaction() {
     }
 
-    public AccountTransaction(BigDecimal balance, Long accountNo, BigDecimal amount, Date timestamp) {
+    public AccountTransaction(BigDecimal balance, Long accountNo, BigDecimal amount, Long timestamp) {
         this.balance = balance;
         this.accountNo = accountNo;
         this.amount = amount;
@@ -60,11 +60,11 @@ public class AccountTransaction {
         this.amount = amount;
     }
 
-    public Date getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 }
