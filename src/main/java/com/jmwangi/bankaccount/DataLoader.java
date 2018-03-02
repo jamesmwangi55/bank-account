@@ -1,7 +1,7 @@
 package com.jmwangi.bankaccount;
 
-import com.jmwangi.bankaccount.repositories.AccountRepository;
 import com.jmwangi.bankaccount.model.AccountTransaction;
+import com.jmwangi.bankaccount.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -9,10 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.temporal.Temporal;
 import java.util.Date;
 
 @Component
