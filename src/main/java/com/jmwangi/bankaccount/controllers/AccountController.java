@@ -24,6 +24,10 @@ public class AccountController {
 
         Object object = accountService.debit(transactionHelper);
 
+        return getResponseEntity(object);
+    }
+
+    private ResponseEntity<?> getResponseEntity(Object object) {
         if (object instanceof ErrorModel) {
             return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
         }
@@ -31,28 +35,17 @@ public class AccountController {
         return new ResponseEntity<>(object, HttpStatus.OK);
     }
 
-
     @PostMapping("/accounts/deposit")
     public ResponseEntity<?> credit(@RequestBody TransactionHelper transactionHelper) {
 
         Object object = accountService.credit(transactionHelper);
 
-        if (object instanceof ErrorModel) {
-          return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(object, HttpStatus.OK);
+        return getResponseEntity(object);
     }
 
     @GetMapping("/accounts/balance")
     public AccountTransaction balance() {
         return accountService.balance();
-    }
-
-    @PostMapping("accounts")
-    public ResponseEntity<?> create(@RequestBody AccountTransaction accountTransaction) {
-        AccountTransaction accountTransaction1 = accountService.create(accountTransaction);
-        return new ResponseEntity<Object>(accountTransaction1, HttpStatus.OK);
     }
 
 }
