@@ -16,6 +16,6 @@ public class Limits {
 
     // frequency
     public static final int MAX_DEPOSIT_FREQUENCY = 4;
-    public static final int MAX_WITHDRAWAL_FREQUENCY = 0;
+    public static final int MAX_WITHDRAWAL_FREQUENCY = 3;
 
 }

@@ -20,9 +20,15 @@ public class AccountController {
     }
 
     @PostMapping("/accounts/withdraw")
-    public ResponseEntity<?> debit(@RequestBody AccountTransaction accountTransaction) {
+    public ResponseEntity<?> debit(@RequestBody TransactionHelper transactionHelper) {
 
-        return new ResponseEntity<Object>(accountTransaction, HttpStatus.OK);
+        Object object = accountService.debit(transactionHelper);
+
+        if (object instanceof ErrorModel) {
+            return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(object, HttpStatus.OK);
     }
 
 
@@ -32,10 +38,10 @@ public class AccountController {
         Object object = accountService.credit(transactionHelper);
 
         if (object instanceof ErrorModel) {
-          return  new ResponseEntity<Object>(object, HttpStatus.INTERNAL_SERVER_ERROR);
+          return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<Object>(object, HttpStatus.OK);
+        return new ResponseEntity<>(object, HttpStatus.OK);
     }
 
     @GetMapping("/accounts/balance")
