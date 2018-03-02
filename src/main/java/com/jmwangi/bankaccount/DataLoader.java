@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.Date;
 
 @Component
@@ -27,7 +28,7 @@ public class DataLoader implements ApplicationRunner {
         accountTransaction.setBalance(new BigDecimal(20000).setScale(2, RoundingMode.DOWN));
         accountTransaction.setAmount(new BigDecimal(0).setScale(2, RoundingMode.DOWN));
         accountTransaction.setAccountNo(2929134324L);
-        accountTransaction.setTimestamp(new Date().getTime());
+        accountTransaction.setTimestamp(Instant.now().toEpochMilli());
         accountRepository.save(accountTransaction);
     }
 }
