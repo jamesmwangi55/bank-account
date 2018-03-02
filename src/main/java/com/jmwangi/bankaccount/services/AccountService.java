@@ -25,40 +25,24 @@ public class AccountService {
     }
 
     public Object debit(TransactionHelper transactionHelper) {
+
         long accountNumber = transactionHelper.getAccountNumber();
         BigDecimal amount = transactionHelper.getAmount();
 
-        // return if debit amount is greater than zero
-        if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            return new ErrorModel(ErrorMessages.WITHDRAWAL_LESS_THAN_ZERO);
+        Object x = validateWithdrawTransaction(amount);
+        if (x != null) {
+            return x;
         }
 
-        // return if debit amount exceeds max withdrawal per transaction
-        if (amount.compareTo(Limits.MAX_WITHDRAWAL_PER_TRANSACTION) > 0) {
-            return new ErrorModel(ErrorMessages.EXCEED_MAXIMUM_WITHDRAWAL_PER_TRANSACTION);
-        }
+        List<AccountTransaction> transactions = getAccountTransactions();
 
-        // check if maximum withdrawal frequency has been reached
-        List<AccountTransaction> transactions =
-                accountRepository.findByTimestampBetween(
-                        DateHelpers.getStartOfDay(new Date()).getTime(),
-                        DateHelpers.getEndOfDay(new Date()).getTime()
-                );
-        // getWithdrawal transaction count
-        long transactionsCount = transactions.stream()
-                .filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) < 0)
-                .count();
-
-        // return if transaction count exceeds maximum daily withdrawal frequency
-        if (transactionsCount == Limits.MAX_WITHDRAWAL_FREQUENCY) {
+        if (isWithdrawalFrequencyReached(transactions)) {
             return new ErrorModel(ErrorMessages.MAX_WITHDRAWAL_FREQUENCY_FOR_DAY_REACHED);
         }
 
-        // return if total has reached max withdrawal amount for day
-        BigDecimal total = transactions.stream()
-                .filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) < 0)
-                .map(accountTransaction -> accountTransaction.getAmount().abs())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal total = getTotalWithdrawnForDay(transactions);
+
+
         if (total.compareTo(Limits.MAX_WITHDRAWAL_FOR_THE_DAY) == 0) {
             return new ErrorModel(ErrorMessages.MAX_WITHDRAWAL_FOR_DAY_REACHED);
         }
@@ -66,15 +50,9 @@ public class AccountService {
         // find last transaction
         AccountTransaction accountTransaction = accountRepository.findTopByOrderByTimestampDesc();
 
-        if (total.add(amount).compareTo(Limits.MAX_WITHDRAWAL_FOR_THE_DAY) > 0) {
-            BigDecimal withdrawable = Limits.MAX_WITHDRAWAL_FOR_THE_DAY.subtract(total);
-
-            // check if amount exceeds balance
-            if (withdrawable.compareTo(accountTransaction.getBalance()) > 0) {
-                return new ErrorModel(ErrorMessages.AMOUNT_WILL_EXCEED_MAX_WITHDRAWAL_FOR_DAY + accountTransaction.getBalance());
-            }
-
-            return new ErrorModel(ErrorMessages.AMOUNT_WILL_EXCEED_MAX_WITHDRAWAL_FOR_DAY + withdrawable.toString());
+        Object withdrawable = validateMaxWithdrawalNotExceeded(amount, total, accountTransaction);
+        if (withdrawable != null) {
+            return withdrawable;
         }
 
         // return if withdrawal amount exceeds balance
@@ -92,6 +70,61 @@ public class AccountService {
         return accountRepository.save(newTransaction);
     }
 
+    private Object validateMaxWithdrawalNotExceeded(BigDecimal amount, BigDecimal total, AccountTransaction accountTransaction) {
+        if (total.add(amount).compareTo(Limits.MAX_WITHDRAWAL_FOR_THE_DAY) > 0) {
+            BigDecimal withdrawable = Limits.MAX_WITHDRAWAL_FOR_THE_DAY.subtract(total);
+
+            // check if amount exceeds balance
+            if (withdrawable.compareTo(accountTransaction.getBalance()) > 0) {
+                return new ErrorModel(ErrorMessages.AMOUNT_WILL_EXCEED_MAX_WITHDRAWAL_FOR_DAY + accountTransaction.getBalance());
+            }
+
+            return new ErrorModel(ErrorMessages.AMOUNT_WILL_EXCEED_MAX_WITHDRAWAL_FOR_DAY + withdrawable.toString());
+        }
+        return null;
+    }
+
+    private BigDecimal getTotalWithdrawnForDay(List<AccountTransaction> transactions) {
+        // return if total has reached max withdrawal amount for day
+        return transactions.stream()
+                .filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) < 0)
+                .map(accountTransaction -> accountTransaction.getAmount().abs())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private boolean isWithdrawalFrequencyReached(List<AccountTransaction> transactions) {
+        // getWithdrawal transaction count
+        long transactionsCount = transactions.stream()
+                .filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) < 0)
+                .count();
+
+        // return if transaction count exceeds maximum daily withdrawal frequency
+        if (transactionsCount == Limits.MAX_WITHDRAWAL_FREQUENCY) {
+            return true;
+        }
+        return false;
+    }
+
+    private List<AccountTransaction> getAccountTransactions() {
+        return accountRepository.findByTimestampBetween(
+                DateHelpers.getStartOfDay(new Date()).getTime(),
+                DateHelpers.getEndOfDay(new Date()).getTime()
+        );
+    }
+
+    private Object validateWithdrawTransaction(BigDecimal amount) {
+        // return if debit amount is greater than zero
+        if (amount.compareTo(BigDecimal.ZERO) < 0) {
+            return new ErrorModel(ErrorMessages.WITHDRAWAL_LESS_THAN_ZERO);
+        }
+
+        // return if debit amount exceeds max withdrawal per transaction
+        if (amount.compareTo(Limits.MAX_WITHDRAWAL_PER_TRANSACTION) > 0) {
+            return new ErrorModel(ErrorMessages.EXCEED_MAXIMUM_WITHDRAWAL_PER_TRANSACTION);
+        }
+        return null;
+    }
+
     public Object credit(TransactionHelper transactionHelper) {
         long accountNumber = transactionHelper.getAccountNumber();
         BigDecimal amount = transactionHelper.getAmount();
@@ -106,11 +139,7 @@ public class AccountService {
             return new ErrorModel(ErrorMessages.EXCEED_MAXIMUM_DEPOSIT_PER_TRANSACTION);
         }
 
-        // check if maximum deposit frequency has been reached
-        List<AccountTransaction> transactions =
-                accountRepository.findByTimestampBetween(
-                                DateHelpers.getStartOfDay(new Date()).getTime(),
-                                DateHelpers.getEndOfDay(new Date()).getTime());
+        List<AccountTransaction> transactions = getAccountTransactions();
 
         long transactionsCount = transactions.stream()
                 .filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) > 0)
