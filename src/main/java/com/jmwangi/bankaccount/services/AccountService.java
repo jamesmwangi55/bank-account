@@ -181,8 +181,6 @@ public class AccountService {
 
     }
 
-
-
     /*
     Get the last transaction, balance
     indicated is the current balance
