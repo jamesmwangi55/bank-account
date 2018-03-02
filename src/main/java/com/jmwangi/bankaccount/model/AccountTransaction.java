@@ -13,16 +13,16 @@ public class AccountTransaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private BigDecimal balance;
-    private Long accountNo;
+    private Long accountNumber;
     private BigDecimal amount;
     private Long timestamp;
 
     public AccountTransaction() {
     }
 
-    public AccountTransaction(BigDecimal balance, Long accountNo, BigDecimal amount, Long timestamp) {
+    public AccountTransaction(BigDecimal balance, Long accountNumber, BigDecimal amount, Long timestamp) {
         this.balance = balance;
-        this.accountNo = accountNo;
+        this.accountNumber = accountNumber;
         this.amount = amount;
         this.timestamp = timestamp;
     }
@@ -45,11 +45,11 @@ public class AccountTransaction {
 
 
     public Long getAccountNo() {
-        return accountNo;
+        return accountNumber;
     }
 
-    public void setAccountNo(Long accountNo) {
-        this.accountNo = accountNo;
+    public void setAccountNo(Long accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public BigDecimal getAmount() {

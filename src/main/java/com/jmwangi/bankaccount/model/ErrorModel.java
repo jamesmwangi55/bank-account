@@ -1,12 +1,12 @@
 package com.jmwangi.bankaccount.model;
 
-public class Error {
+public class ErrorModel {
     private String message;
 
-    public Error() {
+    public ErrorModel() {
     }
 
-    public Error(String message) {
+    public ErrorModel(String message) {
         this.message = message;
     }
 

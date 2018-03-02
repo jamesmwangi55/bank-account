@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface AccountRepository extends CrudRepository<AccountTransaction, Long>{
    AccountTransaction findTopByOrderByTimestampDesc();
-   List<AccountTransaction> findByTimestampBetween();
+   List<AccountTransaction> findByTimestampBetween(Long startOfDay, Long endOfDay);
 }

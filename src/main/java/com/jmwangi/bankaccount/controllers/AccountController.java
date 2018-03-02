@@ -1,6 +1,6 @@
 package com.jmwangi.bankaccount.controllers;
 
-import com.jmwangi.bankaccount.model.Error;
+import com.jmwangi.bankaccount.model.ErrorModel;
 import com.jmwangi.bankaccount.model.TransactionHelper;
 import com.jmwangi.bankaccount.services.AccountService;
 import com.jmwangi.bankaccount.model.AccountTransaction;
@@ -31,11 +31,11 @@ public class AccountController {
 
         Object object = accountService.credit(transactionHelper);
 
-        if (object instanceof Error) {
+        if (object instanceof ErrorModel) {
           return  new ResponseEntity<Object>(object, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<Object>((AccountTransaction) object, HttpStatus.OK);
+        return new ResponseEntity<Object>(object, HttpStatus.OK);
     }
 
     @GetMapping("/accounts/balance")
