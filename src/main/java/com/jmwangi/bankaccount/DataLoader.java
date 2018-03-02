@@ -1,7 +1,7 @@
 package com.jmwangi.bankaccount;
 
-import com.jmwangi.bankaccount.account.AccountRepository;
-import com.jmwangi.bankaccount.account.AccountTransaction;
+import com.jmwangi.bankaccount.repositories.AccountRepository;
+import com.jmwangi.bankaccount.model.AccountTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

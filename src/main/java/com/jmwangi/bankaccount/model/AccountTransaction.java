@@ -1,4 +1,4 @@
-package com.jmwangi.bankaccount.account;
+package com.jmwangi.bankaccount.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

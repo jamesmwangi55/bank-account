@@ -1,5 +1,8 @@
-package com.jmwangi.bankaccount.account;
+package com.jmwangi.bankaccount.controllers;
 
+import com.jmwangi.bankaccount.model.TransactionHelper;
+import com.jmwangi.bankaccount.services.AccountService;
+import com.jmwangi.bankaccount.model.AccountTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +26,14 @@ public class AccountController {
 
 
     @PostMapping("/accounts/deposit")
-    public AccountTransaction credit() {
-        return accountService.credit();
+    public AccountTransaction credit(@RequestBody TransactionHelper transactionHelper) {
+
+        return accountService.credit(transactionHelper);
     }
 
     @GetMapping("/accounts/balance")
-    public AccountTransaction balance(@PathVariable Long id) {
-        return accountService.balance(id);
+    public AccountTransaction balance() {
+        return accountService.balance();
     }
 
     @PostMapping("accounts")
