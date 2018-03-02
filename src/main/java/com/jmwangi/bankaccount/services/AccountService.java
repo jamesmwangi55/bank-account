@@ -154,10 +154,12 @@ public class AccountService {
                 .map(AccountTransaction::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        // return if max deposits is already reached
         if (total.compareTo(Limits.MAX_DEPOSIT_FOR_THE_DAY) == 0) {
             return new ErrorModel(ErrorMessages.MAX_DEPOSIT_FOR_DAY_REACHED);
         }
 
+        // return if deposit will exceed max deposits
         if (total.add(amount).compareTo(Limits.MAX_DEPOSIT_FOR_THE_DAY) > 0) {
             BigDecimal x = Limits.MAX_DEPOSIT_FOR_THE_DAY.subtract(total);
             return new ErrorModel(ErrorMessages.AMOUNT_WILL_EXCEED_MAX_DEPOSIT_FOR_DAY + x.toString());
