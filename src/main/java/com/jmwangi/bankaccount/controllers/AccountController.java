@@ -19,6 +19,14 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    private ResponseEntity<?> getResponseEntity(Object object) {
+        if (object instanceof ErrorModel) {
+            return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(object, HttpStatus.OK);
+    }
+
     @PostMapping("/accounts/withdraw")
     public ResponseEntity<?> debit(@RequestBody TransactionHelper transactionHelper) {
 
@@ -27,13 +35,6 @@ public class AccountController {
         return getResponseEntity(object);
     }
 
-    private ResponseEntity<?> getResponseEntity(Object object) {
-        if (object instanceof ErrorModel) {
-            return new ResponseEntity<>(object, HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(object, HttpStatus.OK);
-    }
 
     @PostMapping("/accounts/deposit")
     public ResponseEntity<?> credit(@RequestBody TransactionHelper transactionHelper) {

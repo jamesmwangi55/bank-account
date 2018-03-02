@@ -24,10 +24,6 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public AccountTransaction create(AccountTransaction accountTransaction) {
-        return accountRepository.save(accountTransaction);
-    }
-
     public Object debit(TransactionHelper transactionHelper) {
         long accountNumber = transactionHelper.getAccountNumber();
         BigDecimal amount = transactionHelper.getAmount();
@@ -67,17 +63,23 @@ public class AccountService {
             return new ErrorModel(ErrorMessages.MAX_WITHDRAWAL_FOR_DAY_REACHED);
         }
 
-        if (total.add(amount).compareTo(Limits.MAX_WITHDRAWAL_FOR_THE_DAY) > 0) {
-            BigDecimal x = Limits.MAX_DEPOSIT_FOR_THE_DAY.subtract(total);
-            return new ErrorModel(ErrorMessages.AMOUNT_WILL_EXCEED_MAX_WITHDRAWAL_FOR_DAY + x.toString());
-        }
-
         // find last transaction
         AccountTransaction accountTransaction = accountRepository.findTopByOrderByTimestampDesc();
 
+        if (total.add(amount).compareTo(Limits.MAX_WITHDRAWAL_FOR_THE_DAY) > 0) {
+            BigDecimal withdrawable = Limits.MAX_WITHDRAWAL_FOR_THE_DAY.subtract(total);
+
+            // check if amount exceeds balance
+            if (withdrawable.compareTo(accountTransaction.getBalance()) > 0) {
+                return new ErrorModel(ErrorMessages.AMOUNT_WILL_EXCEED_MAX_WITHDRAWAL_FOR_DAY + accountTransaction.getBalance());
+            }
+
+            return new ErrorModel(ErrorMessages.AMOUNT_WILL_EXCEED_MAX_WITHDRAWAL_FOR_DAY + withdrawable.toString());
+        }
+
         // return if withdrawal amount exceeds balance
         if (amount.compareTo(accountTransaction.getBalance()) > 0) {
-            return new ErrorModel(ErrorMessages.WITHDRAWAL_AMOUNT_EXCEEDS_BALANCE);
+            return new ErrorModel(ErrorMessages.WITHDRAWAL_AMOUNT_EXCEEDS_BALANCE + accountTransaction.getBalance());
         }
 
         AccountTransaction newTransaction = new AccountTransaction();

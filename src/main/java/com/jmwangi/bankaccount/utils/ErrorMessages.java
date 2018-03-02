@@ -12,5 +12,5 @@ public class ErrorMessages {
     public static final String MAX_WITHDRAWAL_FREQUENCY_FOR_DAY_REACHED = "Maximum withdrawal frequency for day reached";
     public static final String WITHDRAWAL_LESS_THAN_ZERO = "Withdrawal amount is less than zero";
     public static final String AMOUNT_WILL_EXCEED_MAX_WITHDRAWAL_FOR_DAY = "Withdrawal will exceed maximum withdrawal for the day. You can only withdrawal $";
-    public static final String WITHDRAWAL_AMOUNT_EXCEEDS_BALANCE = "Withdrawal amount exceeds balance";
+    public static final String WITHDRAWAL_AMOUNT_EXCEEDS_BALANCE = "Withdrawal amount exceeds balance. Your balance is $";
 }
