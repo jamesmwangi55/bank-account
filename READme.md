@@ -1,7 +1,7 @@
-# Tala Home Challenge Solution
+# Spring boot sample app
 
 
-Tala home challenge solution using [Spring Boot](http://projects.spring.io/spring-boot/).
+Sample app using [Spring Boot](http://projects.spring.io/spring-boot/).
 
 ## Requirements
 
