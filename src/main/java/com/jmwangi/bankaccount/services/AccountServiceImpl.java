@@ -17,12 +17,8 @@ import java.util.List;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-    private final AccountRepository accountRepository;
-
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
+    private  AccountRepository accountRepository;
 
     @Override
     public Object debit(TransactionHelper transactionHelper) {

@@ -14,7 +14,7 @@ import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @RunWith(SpringRunner.class)
