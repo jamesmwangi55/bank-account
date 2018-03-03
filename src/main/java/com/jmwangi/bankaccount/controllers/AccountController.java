@@ -2,7 +2,7 @@ package com.jmwangi.bankaccount.controllers;
 
 import com.jmwangi.bankaccount.model.ErrorModel;
 import com.jmwangi.bankaccount.model.TransactionHelper;
-import com.jmwangi.bankaccount.services.AccountService;
+import com.jmwangi.bankaccount.services.AccountServiceImpl;
 import com.jmwangi.bankaccount.model.AccountTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AccountController {
 
-    private final AccountService accountService;
+    private final AccountServiceImpl accountServiceImpl;
 
     @Autowired
-    public AccountController(AccountService accountService) {
-        this.accountService = accountService;
+    public AccountController(AccountServiceImpl accountServiceImpl) {
+        this.accountServiceImpl = accountServiceImpl;
     }
 
     private ResponseEntity<?> getResponseEntity(Object object) {
@@ -30,7 +30,7 @@ public class AccountController {
     @PostMapping("/accounts/withdraw")
     public ResponseEntity<?> debit(@RequestBody TransactionHelper transactionHelper) {
 
-        Object object = accountService.debit(transactionHelper);
+        Object object = accountServiceImpl.debit(transactionHelper);
 
         return getResponseEntity(object);
     }
@@ -39,14 +39,14 @@ public class AccountController {
     @PostMapping("/accounts/deposit")
     public ResponseEntity<?> credit(@RequestBody TransactionHelper transactionHelper) {
 
-        Object object = accountService.credit(transactionHelper);
+        Object object = accountServiceImpl.credit(transactionHelper);
 
         return getResponseEntity(object);
     }
 
     @GetMapping("/accounts/balance")
     public AccountTransaction balance() {
-        return accountService.balance();
+        return accountServiceImpl.balance();
     }
 
 }
