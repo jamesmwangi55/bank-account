@@ -22,8 +22,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Object debit(TransactionHelper transactionHelper) {
-
-        long accountNumber = transactionHelper.getAccountNumber();
         BigDecimal amount = transactionHelper.getAmount();
 
         Object x = validateWithdrawTransaction(amount);
@@ -58,7 +56,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         AccountTransaction newTransaction = new AccountTransaction();
-        newTransaction.setAccountNo(accountNumber);
+        newTransaction.setAccountNo(accountTransaction.getAccountNo());
         newTransaction.setAmount(amount.negate());
         newTransaction.setBalance(accountTransaction.getBalance().subtract(amount));
         newTransaction.setTimestamp(new Date().getTime());
@@ -96,10 +94,7 @@ public class AccountServiceImpl implements AccountService {
                 .count();
 
         // return if transaction count exceeds maximum daily withdrawal frequency
-        if (transactionsCount == Limits.MAX_WITHDRAWAL_FREQUENCY) {
-            return true;
-        }
-        return false;
+        return transactionsCount == Limits.MAX_WITHDRAWAL_FREQUENCY;
     }
 
     private List<AccountTransaction> getAccountTransactions() {
@@ -124,7 +119,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Object credit(TransactionHelper transactionHelper) {
-        long accountNumber = transactionHelper.getAccountNumber();
         BigDecimal amount = transactionHelper.getAmount();
 
         // return if deposit amount is less than zero
@@ -169,13 +163,14 @@ public class AccountServiceImpl implements AccountService {
 
         // create new transaction
         AccountTransaction newTransaction = new AccountTransaction();
-        newTransaction.setAccountNo(accountNumber);
+        newTransaction.setAccountNo(accountTransaction.getAccountNo());
         newTransaction.setAmount(amount);
         newTransaction.setTimestamp(new Date().getTime());
         newTransaction.setBalance(accountTransaction.getBalance().add(amount));
 
         // save transaction
-        return accountRepository.save(newTransaction);
+        AccountTransaction createdTransaction = accountRepository.save(newTransaction);
+        return createdTransaction;
 
     }
 

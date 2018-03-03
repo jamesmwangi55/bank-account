@@ -72,4 +72,19 @@ public class AccountRepositoryTest {
         assertThat(transactions.get(0).getAccountNo())
                 .isEqualTo(accountTransaction.getAccountNo());
     }
+
+    @Test
+    public void saveShouldReturnAccountRepositoryThatWasSaved() {
+        // given
+        AccountTransaction accountTransaction = new AccountTransaction();
+        accountTransaction.setBalance(new BigDecimal(40000).setScale(2, RoundingMode.DOWN));
+        accountTransaction.setAmount(new BigDecimal(40000).setScale(2, RoundingMode.DOWN));
+        accountTransaction.setAccountNo(2929134324L);
+        accountTransaction.setTimestamp(new Date().getTime());
+//        entityManager.persist(accountTransaction);
+//        entityManager.flush();
+
+        AccountTransaction savedTransaciton = accountRepository.save(accountTransaction);
+        assertThat(savedTransaciton.getAccountNo()).isEqualTo(accountTransaction.getAccountNo());
+    }
 }

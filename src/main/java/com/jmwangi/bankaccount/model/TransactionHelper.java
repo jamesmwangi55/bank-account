@@ -7,25 +7,15 @@ import java.math.BigDecimal;
 * deposit / withdraw.
 * */
 public class TransactionHelper {
-    private Long accountNumber;
     private BigDecimal amount;
 
     public TransactionHelper() {
     }
 
-    public TransactionHelper(Long accountNumber, BigDecimal amount) {
-        this.accountNumber = accountNumber;
+    public TransactionHelper(BigDecimal amount) {
         this.amount = amount;
     }
 
-
-    public Long getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(Long accountNumber) {
-        this.accountNumber = accountNumber;
-    }
 
     public BigDecimal getAmount() {
         return amount;
