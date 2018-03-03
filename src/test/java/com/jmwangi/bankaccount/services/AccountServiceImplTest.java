@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,13 +19,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.not;
 
 @RunWith(SpringRunner.class)
 public class AccountServiceImplTest {
@@ -53,6 +50,8 @@ public class AccountServiceImplTest {
         Mockito.when(accountRepository.findTopByOrderByTimestampDesc())
                 .thenReturn(accountTransaction);
 
+        Mockito.when(accountRepository.save(accountTransaction))
+                .thenReturn(accountTransaction);
     }
 
     @MockBean
@@ -146,45 +145,6 @@ public class AccountServiceImplTest {
         assertThat(errorModel.getMessage()).isEqualTo(ErrorMessages.AMOUNT_WILL_EXCEED_MAX_DEPOSIT_FOR_DAY + new BigDecimal(30000).setScale(2, RoundingMode.DOWN));
     }
 
-//    @Test
-//    public void creditLegalAmountShouldReturnAccountTransactionThatWasCreated(){
-//        List<AccountTransaction> transactions = new ArrayList<>();
-//
-//        IntStream.range(0, 2).forEach(i -> {
-//            AccountTransaction accountTransaction = new AccountTransaction();
-//            accountTransaction.setAmount(new BigDecimal(40000).setScale(2, RoundingMode.DOWN));
-//            accountTransaction.setBalance(new BigDecimal(40000).multiply(new BigDecimal(2)).setScale(2, RoundingMode.DOWN));
-//            accountTransaction.setAccountNo(2929134324L);
-//            accountTransaction.setTimestamp(new Date().getTime());
-//            transactions.add(accountTransaction);
-//        });
-//
-//        Mockito.when(accountRepository.findByTimestampBetween(DateHelpers.getStartOfDay(new Date()).getTime(),
-//                DateHelpers.getEndOfDay(new Date()).getTime()))
-//                .thenReturn(transactions);
-//
-//
-//        TransactionHelper transactionHelper = new TransactionHelper();
-//        transactionHelper.setAmount(new BigDecimal(1000));
-//
-//        AccountTransaction accountTransaction = transactions.get(transactions.size() - 1);
-//
-//        AccountTransaction newTransaction = new AccountTransaction();
-//        newTransaction.setAmount(transactionHelper.getAmount());
-//        newTransaction.setBalance(accountTransaction.getBalance().add(transactionHelper.getAmount()));
-//        newTransaction.setAccountNo(accountTransaction.getAccountNo());
-//        newTransaction.setTimestamp(new Date().getTime());
-//
-//        Mockito.when(accountRepository.findTopByOrderByTimestampDesc())
-//                .thenReturn(transactions.get(transactions.size() - 1));
-//
-//        Mockito.when(accountRepository.save(newTransaction))
-//                .thenReturn(newTransaction);
-//
-//        Object object = accountService.credit(transactionHelper);
-//
-//        assertThat(object).isExactlyInstanceOf(AccountTransaction.class);
-//    }
 
     public void widhrawMoreThan20KShouldReturnErrorModel() {
 
@@ -268,6 +228,8 @@ public class AccountServiceImplTest {
         assertThat(errorModel.getMessage())
                 .isEqualTo(ErrorMessages.AMOUNT_WILL_EXCEED_MAX_WITHDRAWAL_FOR_DAY + new BigDecimal(10000).setScale(2, RoundingMode.DOWN));
     }
+
+
 
     @Test
     public void balance() {
